@@ -1,0 +1,36 @@
+{
+  "footer": "〘 Minestats • v2.0 〙",
+  "footerURL": "",
+  "color": "#ff66d9",
+  "assets": {
+    "hypixel": {
+      "arcade": "https://i.imgur.com/9eYpFMQ.png",
+      "arena": "https://imgur.com/7IviFlz.png",
+      "bedwars": "https://imgur.com/mYcWYRa.png",
+      "buildbattle": "https://imgur.com/xV6c8JZ.png",
+      "classicgames": "https://imgur.com/bnB9lBG.png",
+      "crazywalls": "https://imgur.com/iBdq9hQ.png",
+      "cvc": "https://imgur.com/UiCuc5o.png",
+      "duels": "https://imgur.com/XclQwum.png",
+      "megawalls": "https://imgur.com/kR7MoZQ.png",
+      "murdermystery": "https://imgur.com/QBnhiab.png",
+      "paintball": "https://imgur.com/YlQYxbq.png",
+      "pit": "https://imgur.com/TyDj9WF.png",
+      "prototype": "https://imgur.com/yDn76Ll.png",
+      "quake": "https://imgur.com/JPr5ncq.png",
+      "blitz": "https://imgur.com/nuBefLP.png",
+      "skyblock": "https://imgur.com/ynkp84c.png",
+      "skyclash": "https://imgur.com/Xe7ZCtz.png",
+      "skywars": "https://imgur.com/cvCFCUg.png",
+      "smashheroes": "https://imgur.com/SpWdcdE.png",
+      "speeduhc": "https://imgur.com/Ao4GPN0.png",
+      "tntgames": "https://imgur.com/JKTRCrx.png",
+      "turbokartracers": "https://imgur.com/2aWMvAA.png",
+      "uhc": "https://imgur.com/hU5D2GD.png",
+      "vampirez": "https://imgur.com/r8OFMRG.png",
+      "walls": "https://imgur.com/mY9216h.png",
+      "warlords": "https://imgur.com/C4BiVns.png"
+    },
+    "error": "https://cdn.iconscout.com/icon/free/png-256/warning-notice-sign-symbol-38020.png"
+  }
+}

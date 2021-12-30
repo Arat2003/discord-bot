@@ -1,0 +1,43 @@
+{
+  "name": "ms-rewrite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./dist/index.js",
+    "dev": "nodemon ./src/index.ts",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@typegoose/typegoose": "^7.5.0",
+    "beautify": "0.0.8",
+    "canvas": "^2.8.0",
+    "chalk": "^4.1.0",
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "mongoose": "^5.10.18",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^2.6.1",
+    "prismarine-nbt": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/beautify": "0.0.0",
+    "@types/express": "^4.17.11",
+    "@types/jest": "^26.0.20",
+    "@types/lodash": "^4.14.168",
+    "@types/mongoose": "^5.10.3",
+    "@types/node": "^14.14.31",
+    "@types/node-fetch": "^2.5.8",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7",
+    "ts-jest": "^26.5.2",
+    "typescript": "^4.2.2"
+  }
+}
