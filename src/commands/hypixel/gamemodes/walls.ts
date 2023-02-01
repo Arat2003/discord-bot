@@ -1,6 +1,7 @@
 import { EmbedField, Message } from "discord.js";
 import Command from "../../../structures/client/Command";
 import UserModel from "../../../util/database/User";
+import { gamemodeEmbedMaker } from "../../../util/functions/embeds";
 import { getUserOrUUID } from "../../../util/functions/mcUuidFunctions";
 import { Categories } from "../../../util/interfaces/cmdCategories";
 import { ErrorResponses } from "../../../util/interfaces/responses";
@@ -17,7 +18,7 @@ class Walls extends Command {
   stats = true;
 
   async execute(message: Message, args: string[]) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
 
@@ -26,9 +27,11 @@ class Walls extends Command {
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
@@ -36,19 +39,22 @@ class Walls extends Command {
 
     if (!playerUUID) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
     const player = await playerWrapper(playerUUID as string);
 
     if (!player) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
+        ]
+      });
     }
 
     const skinUrl = skinImage(playerUUID, "face");
@@ -66,21 +72,17 @@ class Walls extends Command {
       { name: "WLR", value: `\`${stats.wlr}\``, inline: true },
     ];
 
-    const embed = this.client
-      .templateEmbed()
-      .setColor(player.parsed.plusColor)
-      .addFields(pages)
-      .setTitle(
-        `${player.parsed.rank !== "Non" ? `[${player.parsed.rank}]` : ""} ${
-          player.parsed.name
-        }`
-      )
-      .setDescription(`VampireZ - **Overall**`)
-      .attachFiles([{ name: "skin.png", attachment: skinUrl }])
-      .setThumbnail("attachment://skin.png");
+    const embed = gamemodeEmbedMaker(
+      this.client,
+      player.parsed,
+      pages,
+      "The Walls - **Overall**"
+    )
 
-    message.channel.stopTyping();
-    message.channel.send(embed);
+    message.channel.send({
+      embeds: [embed],
+      files: [{name: "skin.png", attachment: skinUrl}]
+    });
     return;
   }
 }

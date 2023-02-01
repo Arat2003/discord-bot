@@ -18,7 +18,7 @@ class CrazyWalls extends Command {
   stats = true;
 
   async execute(message: Message, args: string[]) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
 
@@ -27,9 +27,11 @@ class CrazyWalls extends Command {
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
@@ -37,19 +39,22 @@ class CrazyWalls extends Command {
 
     if (!playerUUID) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
     const player = await playerWrapper(playerUUID as string);
 
     if (!player) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
+        ]
+      });
     }
 
     const skinUrl = skinImage(playerUUID, "face");
@@ -74,15 +79,13 @@ class CrazyWalls extends Command {
           }`
         )
         .setDescription(`Crazy Walls - **${page.desc}**`)
-        .attachFiles([{ name: "skin.png", attachment: skinUrl }])
-        .setThumbnail("attachment://skin.png");
+        .setThumbnail("attachment://img.png");
 
       return embed;
     });
 
-    const pagination = new Pagination(message.channel as TextChannel, embeds);
+    const pagination = new Pagination(message.channel as TextChannel, embeds, skinUrl);
     pagination.paginate(60000);
-    message.channel.stopTyping();
     return;
   }
 }

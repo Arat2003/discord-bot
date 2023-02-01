@@ -16,29 +16,28 @@ class Nick extends Command {
   cooldown = 60;
 
   async execute(message: Message, args: string[]): Promise<Message | void> {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     if (!user) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_VERIFIED)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_VERIFIED)]
+      });
     }
 
     if (!args.length) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(
-          "You have to specify the prefix you want. (Available prefixes: bw, guild, network and rank)"
-        )
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(
+            "You have to specify the prefix you want. (Available prefixes: bw, guild, network and rank)"
+          )
+        ]
+      });
     }
 
     if (args.length > 1) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.MORE_THAN_ENOUGH_ARGS)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.MORE_THAN_ENOUGH_ARGS)]
+      });
     }
 
     let nick;
@@ -55,32 +54,35 @@ class Nick extends Command {
           `[${nick}] ${message.member.displayName.replace(/\[.*\]./, "")}`
         )
         .then((n) => {
-          message.channel.stopTyping();
-          message.channel.send(
-            this.client
-              .templateEmbed()
-              .setDescription(
-                `Your nickname has been successfully changed to ${n.nickname}!`
-              )
-          );
+          message.channel.send({
+            embeds: [
+              this.client
+                .templateEmbed()
+                .setDescription(
+                  `Your nickname has been successfully changed to ${n.nickname}!`
+                )
+            ]
+          });
         })
         .catch(() => {
-          message.channel.stopTyping();
-          message.channel.send(
-            this.client.errorEmbed(
-              `**I need more permissions to change your nickname!** Also, make sure that my role (should be \`${
-                message.client.user!.username
-              }\`) is **above your roles in the role hierarchy!** And that you're not the server's owner, since unfortunately it won't work with you.`
-            )
-          );
+          message.channel.send({
+            embeds: [
+              this.client.errorEmbed(
+                `**I need more permissions to change your nickname!** Also, make sure that my role (should be \`${
+                  message.client.user!.username
+                }\`) is **above your roles in the role hierarchy!** And that you're not the server's owner, since unfortunately it won't work with you.`
+              )
+            ]
+          });
         });
     } else {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(
-          "You must specify a valid and supported gamemode to change your nickname. (Guild Rank (guild), Network Level (network), Rank (rank) and BW (bw or bedwars))"
-        )
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(
+            "You must specify a valid and supported gamemode to change your nickname. (Guild Rank (guild), Network Level (network), Rank (rank) and BW (bw or bedwars))"
+          )
+        ]
+      });
     }
   }
 }

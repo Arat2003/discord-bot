@@ -36,7 +36,7 @@ class Watchdog extends Command {
         .addFields(stats)
         .setTitle("Hypixel Ban Stats");
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     }
   }
 }

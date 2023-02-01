@@ -12,7 +12,7 @@ class Whitelist extends Command {
   usage = "<@role>";
 
   async execute(message: Message): Promise<Message> {
-    if (message.member?.hasPermission("ADMINISTRATOR")) {
+    if (message.member?.permissions.has("ADMINISTRATOR")) {
       let guild = await GuildModel.findOne({ guildID: message.guild!.id });
       if (message.mentions?.roles.size === 0) {
         if (guild!.prefixChangeAllowedRoles!.length > 0) {
@@ -20,33 +20,35 @@ class Whitelist extends Command {
             .templateEmbed()
             .setDescription(
               `These are the currently whitelisted roles:\n${guild!.prefixChangeAllowedRoles
-                ?.map((r) => `<@&${r}>`)
+                ?.map((r: any) => `<@&${r}>`)
                 .join(`\n`)}`
             )
-            .setAuthor("Make sure you @ the role you want to whitelist.");
+            .setAuthor({name: "Make sure you @ the role you want to whitelist."});
 
-          return message.channel.send(embed);
+          return message.channel.send({embeds: [embed]});
         } else {
           let embed = this.client
             .templateEmbed()
             .setDescription(
               "There are not any roles allowed to use the Admin commands yet."
             )
-            .setAuthor("Make sure you @ the role you want to whitelist.");
+            .setAuthor({name: "Make sure you @ the role you want to whitelist."});
 
-          return message.channel.send(embed);
+          return message.channel.send({embeds: [embed]});
         }
       } else if (message.mentions.roles.size > 1) {
-        return message.channel.send(
-          this.client.errorEmbed(
-            `<@${message.author.id}, you can only whitelist one role at a time.`
-          )
-        );
+        return message.channel.send({
+          embeds: [
+            this.client.errorEmbed(
+              `<@${message.author.id}, you can only whitelist one role at a time.`
+            )
+          ]
+        });
       } else {
         const role = message.mentions.roles.first()!.id;
         if (guild?.prefixChangeAllowedRoles!.includes(role)) {
           guild.prefixChangeAllowedRoles = guild.prefixChangeAllowedRoles?.filter(
-            (x) => x !== role
+            (x: any) => x !== role
           );
 
           await guild.save();
@@ -57,7 +59,7 @@ class Whitelist extends Command {
               `You've successfully removed <@&${role}> from the whitelist! They are not allowed to execute any command in the Admin category anymore.`
             );
 
-          return message.channel.send(embed);
+          return message.channel.send({embeds: [embed]});
         } else {
           guild?.prefixChangeAllowedRoles?.push(role);
           await guild?.save();
@@ -66,15 +68,17 @@ class Whitelist extends Command {
             .templateEmbed()
             .setDescription(`You've successfully whitelisted <@&${role}>!`);
 
-          return message.channel.send(embed);
+          return message.channel.send({embeds: [embed]});
         }
       }
     } else {
-      return message.channel.send(
-        this.client.errorEmbed(
-          `<@${message.author.id}>, you don't have access to this command. Users with the Administrator permission are the only ones allowed to add a role to the "whitelist".`
-        )
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(
+            `<@${message.author.id}>, you don't have access to this command. Users with the Administrator permission are the only ones allowed to add a role to the "whitelist".`
+          )
+        ]
+      });
     }
   }
 }

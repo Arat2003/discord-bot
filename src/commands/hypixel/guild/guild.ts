@@ -24,12 +24,12 @@ class Guild extends Command {
     args: string[],
     prefix: string
   ): Promise<Message | void> {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
     let guild: HypixelGuild | null;
 
-    let waitMessage = await message.channel.send(this.client.waitEmbed());
+    let waitMessage = await message.channel.send({embeds: [this.client.waitEmbed()]});
 
     if (args.includes("-p")) {
       if (args.length >= 2) {
@@ -37,51 +37,46 @@ class Guild extends Command {
       } else if (user && args.length === 1) {
         playerUUID = user.minecraftUUID;
       } else if (!user && args.length === 1) {
-        return (
-          message.channel.send(
-            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
-          ) &&
-          waitMessage.delete() &&
-          message.channel.stopTyping()
-        );
+          message.channel.send({
+            embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)]
+          });
+          waitMessage.delete();
+          return;
       }
 
       if (!playerUUID) {
-        return (
-          message.channel.send(
-            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-          ) &&
-          waitMessage.delete() &&
-          message.channel.stopTyping()
-        );
+        message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+        });
+        waitMessage.delete();
+        return;
       }
 
       guild = await guildWrapper(playerUUID, "player");
       if (!guild) {
         waitMessage.delete();
-        message.channel.stopTyping();
-        return message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_IN_A_HYPIXEL_GUILD)
-        );
+        return message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_IN_A_HYPIXEL_GUILD)]
+        });
       }
     } else if (args.length > 0) {
       let joinedArgs = args.join("+");
       guild = await guildWrapper(joinedArgs, "name");
       if (!guild) {
         waitMessage.delete();
-        message.channel.stopTyping();
-        return message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_GUILD)
-        );
+        return message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.WRONG_GUILD)]
+        });
       }
     } else {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.usageEmbed(
-          `The correct usage for the command is **${prefix}${this.name} ${this.usage}**.`
-        )
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.usageEmbed(
+            `The correct usage for the command is **${prefix}${this.name} ${this.usage}**.`
+          )
+        ]
+      });
     }
 
     let mostPlayedGamemodes: string[] = [];
@@ -168,7 +163,7 @@ class Guild extends Command {
       let embed = this.client
         .templateEmbed()
         .setTitle(`${guild!.name} ${guild!.tag ? `[${guild!.tag}]` : ""}`)
-        .setColor(guild!.hexColor)
+        .setColor(`#${guild!.hexColor}`)
         .addFields(page);
 
       return embed;
@@ -177,7 +172,6 @@ class Guild extends Command {
     const pagination = new Pagination(message.channel as TextChannel, embeds);
     waitMessage.delete();
     pagination.paginate(60000);
-    message.channel.stopTyping();
     return;
   }
 }

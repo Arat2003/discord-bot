@@ -13,18 +13,18 @@ class Server extends Command {
 
   async execute(message: Message, args: string[], prefix: string) {
     if (!args.length)
-      return message.channel.send(
-        this.client.usageEmbed(`${prefix}${this.name} ${this.usage}`)
-      );
+      return message.channel.send({
+        embeds: [this.client.usageEmbed(`${prefix}${this.name} ${this.usage}`)]
+      });
 
     const serverInfo = await fetch(
       `https://eu.mc-api.net/v3/server/ping/${args[0]}`
     ).then((r) => r.json());
 
     if (serverInfo.error)
-      return message.channel.send(
-        this.client.errorEmbed("You've provided an invalid IP address.")
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed("You've provided an invalid IP address.")]
+      });
 
     const playersOnline = addCommas(`${serverInfo.players.online}`);
     const playersMax = addCommas(`${serverInfo.players.max}`);
@@ -60,13 +60,15 @@ class Server extends Command {
       { name: "MOTD", value: MOTD, inline: false },
     ];
 
-    return message.channel.send(
-      this.client
-        .templateEmbed()
-        .addFields(serverFields)
-        .attachFiles([{ name: "icon.png", attachment: serverIcon }])
-        .setThumbnail("attachment://icon.png")
-    );
+    return message.channel.send({
+      embeds: [
+        this.client
+          .templateEmbed()
+          .addFields(serverFields)
+          .setThumbnail("attachment://icon.png")
+      ],
+      files: [{name: "icon.png", attachment: serverIcon}]
+    });
   }
 }
 

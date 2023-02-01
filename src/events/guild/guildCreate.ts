@@ -1,10 +1,10 @@
-import { Guild } from "discord.js";
+import { ClientEvents, Guild } from "discord.js";
 import Event from "../../structures/client/Event";
 import GuildModel from "../../util/database/Guild";
 import { DbGuild } from "../../util/interfaces/database";
 
 class GuildCreateEvent extends Event {
-  name = "guildCreate";
+  name: keyof ClientEvents = "guildCreate";
 
   async run(guild: Guild) {
     let addedGuild = await GuildModel.findOne({ guildID: guild.id });
@@ -12,7 +12,7 @@ class GuildCreateEvent extends Event {
     if (!addedGuild) {
       const newGuild = new GuildModel({
         guildID: guild.id,
-        guildOwnerID: `${guild.owner?.id}`,
+        guildOwnerID: `${guild.ownerId}`,
         language: "en",
         prefix: "h!",
         ignoredChannels: [],

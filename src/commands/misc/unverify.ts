@@ -16,17 +16,19 @@ class Unverify extends Command {
     });
 
     if (!user) {
-      return message.channel.send(
-        this.client.errorEmbed("You're not verified yet!")
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed("You're not verified yet!")]
+      });
     } else {
-      return message.channel.send(
-        this.client
-          .templateEmbed()
-          .setDescription(
-            "You've successfully unlinked your account from this bot."
-          )
-      );
+      return message.channel.send({
+        embeds: [
+          this.client
+            .templateEmbed()
+            .setDescription(
+              "You've successfully unlinked your account from this bot."
+            )
+        ]
+      });
     }
   }
 }

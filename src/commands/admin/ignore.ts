@@ -14,40 +14,41 @@ class Ignore extends Command {
     const guild = await GuildModel.findOne({
       guildID: message.guild!.id,
     });
-
     if (message.mentions.channels.size === 0) {
       if (guild!.ignoredChannels!.length > 0) {
         let embed = this.client
           .templateEmbed()
           .setDescription(
             `These are the currently ignored channels: \n${guild!
-              .ignoredChannels!.map((r) => `<#${r}>`)
+              .ignoredChannels!.map((r: any) => `<#${r}>`)
               .join(`\n`)}`
           )
-          .setAuthor("Make sure you # a channel if you want to toggle it.");
+          .setAuthor({name: "Make sure you # a channel if you want to toggle it."});
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
       } else {
         let embed = this.client
           .templateEmbed()
-          .setAuthor("There aren't any ignored channels yet.")
+          .setAuthor({name: "There aren't any ignored channels yet."})
           .setDescription(
             `<@${message.author.id}>, make sure you # a channel if you want to toggle it.`
           );
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
       }
     } else if (message.mentions.channels.size > 1) {
-      return message.channel.send(
-        this.client.errorEmbed(
-          `<@${message.author.id}, you can only whitelist one role at a time.`
-        )
-      );
+      return message.channel.send({
+        embeds: [  
+          this.client.errorEmbed(
+            `<@${message.author.id}, you can only ignore one channel at a time.`
+          )
+        ]
+      });
     } else {
       let channel = message.mentions.channels.first()!.id;
       if (guild!.ignoredChannels?.includes(channel)) {
         guild!.ignoredChannels = guild!.ignoredChannels.filter(
-          (x) => x !== channel
+          (x: any) => x !== channel
         );
         await guild!.save();
 
@@ -57,7 +58,7 @@ class Ignore extends Command {
             `You've successfully enabled this bot's messages in <#${channel}>!`
           );
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
       } else {
         guild?.ignoredChannels?.push(channel);
         await guild?.save();
@@ -68,7 +69,7 @@ class Ignore extends Command {
             `You've successfully disabled this bot's messages in <#${channel}>!`
           );
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
       }
     }
   }

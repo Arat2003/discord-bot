@@ -13,7 +13,7 @@ class Gamemodes extends Command {
     const { commands } = this.client;
     const embed = this.client.templateEmbed();
 
-    for (const command of commands.array()) {
+    for (const command of [...commands.values()]) {
       if (command.disabled) continue;
       if (!command.stats) continue;
 
@@ -37,7 +37,7 @@ class Gamemodes extends Command {
     Usage: \`${prefix}<gamemode> [username]\`
     Tip: Replace \`<guildName>\` with \`-p <username>\` to look up guilds by a player's name.`);
 
-    return message.channel.send(embed);
+    return message.channel.send({embeds: [embed]});
   }
 }
 

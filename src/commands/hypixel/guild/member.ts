@@ -20,7 +20,7 @@ class Member extends Command {
   stats = true;
 
   async execute(message: Message, args: string[]) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID: string | undefined;
 
@@ -29,9 +29,9 @@ class Member extends Command {
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
@@ -39,9 +39,9 @@ class Member extends Command {
 
     if (!playerUUID) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+        })
       );
     }
 
@@ -51,9 +51,9 @@ class Member extends Command {
 
     if (!playerGuild) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_IN_A_HYPIXEL_GUILD)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_IN_A_HYPIXEL_GUILD)]
+        })
       );
     }
 
@@ -76,7 +76,7 @@ class Member extends Command {
           playerGuild ? `[${playerGuild.tag}]` : ""
         }`
       )
-      .setColor(player.plusColor)
+      .setColor(`#${player.plusColor}`)
       .addField("Join Date", `\`${member.joined}\``, true)
       .addField("Guild", `\`${playerGuild.name}\``, true)
       .addField("Guild Rank", `\`${member.rank}\``, true)
@@ -96,11 +96,13 @@ class Member extends Command {
         `\`-\` **${member.weeklyXP}** \`[#${member.weeklyRank}/${totalMembers}]\``,
         true
       )
-      .attachFiles([{ name: "skin.png", attachment: skinUrl }])
       .setThumbnail("attachment://skin.png");
 
-    message.channel.stopTyping();
-    message.channel.send(embed);
+    message.channel.send({
+      embeds: [embed],
+      files: [{name: "skin.png", attachment: skinUrl}]
+    });
+    return;
   }
 }
 

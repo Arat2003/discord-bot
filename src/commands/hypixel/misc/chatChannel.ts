@@ -9,13 +9,13 @@ import skinImage from "../../../util/wrappers/skinImage";
 
 class ChatChannel extends Command {
   name = "chatChannel";
-  aliases = ["channel"];
+  aliases = ["channel", "chatchannel"];
   usage = "[username]";
   description = "Check what chat channel the user is typing in by default.";
   category: Categories = "Hypixel";
 
   async execute(message: Message, args: string[]): Promise<Message | void> {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
 
@@ -23,18 +23,24 @@ class ChatChannel extends Command {
       let a = await getUserOrUUID(args[0]);
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+      return (
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
     }
 
     if (!playerUUID) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+      return (
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
@@ -54,7 +60,6 @@ class ChatChannel extends Command {
             : "is sending his messages to an **unknown** channel (which means they probably disabled it in-game)."
         }`
       )
-      .attachFiles([{ name: "skin.png", attachment: skinUrl }])
       .setThumbnail("attachment://skin.png")
       .setTitle(
         `<:${statusEmoji?.name}:${statusEmoji?.id}> ${
@@ -62,7 +67,10 @@ class ChatChannel extends Command {
         } ${player.parsed.name}`
       )
       .setColor(player.parsed.plusColor);
-    return message.channel.send(embed) && message.channel.stopTyping();
+    return message.channel.send({
+      embeds: [embed],
+      files: [{name: "skin.png", attachment: skinUrl}]
+    });
   }
 }
 

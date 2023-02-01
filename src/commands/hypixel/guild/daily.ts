@@ -18,12 +18,12 @@ class Daily extends Command {
   stats = true;
 
   async execute(message: Message, args: string[], prefix: string) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
     let guild: HypixelGuild | null;
 
-    let waitMessage = await message.channel.send(this.client.waitEmbed());
+    let waitMessage = await message.channel.send({embeds: [this.client.waitEmbed()]});
 
     let totalEntries: number;
     if (args[args.length - 1].toLowerCase() === "all") {
@@ -42,53 +42,55 @@ class Daily extends Command {
       } else if (user && args.length === 1) {
         playerUUID = user.minecraftUUID;
       } else if (!user && args.length < 2) {
-        return (
-          message.channel.send(
-            this.client.usageEmbed(
-              `The correct usage for the command is **${prefix}${this.name} ${this.usage}**.`
-            )
-          ) &&
-          waitMessage.delete() &&
-          message.channel.stopTyping()
-        );
+          message.channel.send({
+            embeds: [
+              this.client.usageEmbed(
+                `The correct usage for the command is **${prefix}${this.name} ${this.usage}**.`
+              )
+            ]
+          })
+          
+          waitMessage.delete();
+          return;
       }
 
       if (!playerUUID) {
-        return (
-          message.channel.send(
-            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-          ) &&
-          waitMessage.delete() &&
-          message.channel.stopTyping()
-        );
+        message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+        });
+        waitMessage.delete();
+        return;
       }
 
       guild = await guildWrapper(playerUUID, "player");
       if (!guild) {
         waitMessage.delete();
-        message.channel.stopTyping();
-        return message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_IN_A_HYPIXEL_GUILD)
-        );
+        return message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_IN_A_HYPIXEL_GUILD)
+          ]
+        });
       }
     } else if (args.length > 0) {
       let joinedArgs = args.join("+");
       guild = await guildWrapper(joinedArgs, "name");
       if (!guild) {
         waitMessage.delete();
-        message.channel.stopTyping();
-        return message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_GUILD)
-        );
+        return message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_GUILD)
+          ]
+        });
       }
     } else {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.usageEmbed(
-          `The correct usage for the command is **${prefix}${this.name} ${this.usage}**.`
-        )
-      );
+      return message.channel.send({
+       embeds: [
+         this.client.usageEmbed(
+           `The correct usage for the command is **${prefix}${this.name} ${this.usage}**.`
+         )
+       ] 
+      });
     }
 
     function format(array: any): string[] {
@@ -150,7 +152,7 @@ class Daily extends Command {
             i === 0 ? "Today" : i === 1 ? "Yesterday" : `${i + 1} days ago`
           }`
         )
-        .setColor(guild!.hexColor)
+        .setColor(`#${guild!.hexColor}`)
         .setDescription(
           `\`\`\`c\nTotal Daily Raw GXP: ${addCommas(
             `${totalXpByDay[i][0]}`
@@ -172,7 +174,6 @@ class Daily extends Command {
     const pagination = new Pagination(message.channel as TextChannel, embeds);
     waitMessage.delete();
     pagination.paginate(60000);
-    message.channel.stopTyping();
     return;
   }
 }

@@ -77,40 +77,40 @@ function parseType(stats: any | null, type: BedwarsTypes) {
 }
 
 export function getBedwarsPresColor(star: number) {
-  let prestigeColor = `#AAAAAA`;
+  let prestigeColor = `AAAAAA`;
   if (star >= 0) {
-    prestigeColor = "#AAAAAA";
+    prestigeColor = "AAAAAA";
   }
   if (star >= 100) {
-    prestigeColor = "#F2F2F2";
+    prestigeColor = "F2F2F2";
   }
   if (star >= 200) {
-    prestigeColor = "#FFAA00";
+    prestigeColor = "FFAA00";
   }
   if (star >= 300) {
-    prestigeColor = "#55FFFF";
+    prestigeColor = "55FFFF";
   }
   if (star >= 400) {
-    prestigeColor = "#00AA00";
+    prestigeColor = "00AA00";
   }
   if (star >= 500) {
-    prestigeColor = "#00AAAA";
+    prestigeColor = "00AAAA";
   }
   if (star >= 600) {
-    prestigeColor = "#AA0000";
+    prestigeColor = "AA0000";
   }
   if (star >= 700) {
-    prestigeColor = "#FF55FF";
+    prestigeColor = "FF55FF";
   }
   if (star >= 800) {
-    prestigeColor = "#5555FF";
+    prestigeColor = "5555FF";
   }
   if (star >= 900) {
-    prestigeColor = "#AA00AA";
+    prestigeColor = "AA00AA";
   }
   if (star >= 1000) {
     let letters = "0123456789ABCDEF";
-    prestigeColor = "#";
+    prestigeColor = "";
     for (var i = 0; i < 6; i++) {
       prestigeColor += letters[Math.floor(Math.random() * 16)];
     }

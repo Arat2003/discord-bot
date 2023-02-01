@@ -16,7 +16,7 @@ class Status extends Command {
   usage = "[username]";
 
   async execute(message: Message, args: string[]) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
 
@@ -24,22 +24,28 @@ class Status extends Command {
       let a = await getUserOrUUID(args[0]);
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+      return (
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
     }
 
     if (!playerUUID) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+      return (
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
-    const player = await playerWrapper(playerUUID);
+    const player = await playerWrapper(playerUUID as string);
     const status = await statusWrapper(playerUUID);
 
     let statusText = status.online ? "online" : "offline";
@@ -71,7 +77,6 @@ class Status extends Command {
       .templateEmbed()
       .addField("Status", `${player.parsed.name} is **${statusText}**.`)
       .addFields(fields)
-      .attachFiles([{ name: "skin.png", attachment: skinUrl }])
       .setThumbnail("attachment://skin.png")
       .setTitle(
         `<:${statusEmoji?.name}:${statusEmoji?.id}> ${
@@ -79,7 +84,10 @@ class Status extends Command {
         } ${player.parsed.name}`
       )
       .setColor(player.parsed.plusColor);
-    return message.channel.send(embed) && message.channel.stopTyping();
+    return message.channel.send({
+      embeds: [embed],
+      files: [{name: "skin.png", attachment: skinUrl}]
+    });
   }
 }
 

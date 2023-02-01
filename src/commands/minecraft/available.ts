@@ -14,9 +14,9 @@ class Available extends Command {
   async execute(message: Message, args: string[], prefix: string) {
     const embed = this.client.templateEmbed();
     if (!args.length) {
-      message.channel.send(
-        this.client.usageEmbed(`${prefix}${this.name} ${this.usage}`)
-      );
+      message.channel.send({
+        embeds: [this.client.usageEmbed(`${prefix}${this.name} ${this.usage}`)]
+      });
     }
 
     let username = await getUserOrUUID(args[0]);
@@ -24,10 +24,12 @@ class Available extends Command {
       let skinUrl = skinImage(username.uuid, "face");
       embed
         .setTitle(`${username.name} is taken!`)
-        .attachFiles([{ name: "skin.png", attachment: skinUrl }])
         .setThumbnail("attachment://skin.png");
 
-      return message.channel.send(embed);
+      return message.channel.send({
+        embeds: [embed],
+        files: [{name: "skin.png", attachment: skinUrl}]
+      });
     } else {
       embed
         .setTitle(`${args[0]} is available!`)
@@ -35,7 +37,7 @@ class Available extends Command {
           "This username could also be on cooldown or banned/not allowed by Mojang."
         );
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     }
   }
 }

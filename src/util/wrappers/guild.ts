@@ -119,15 +119,15 @@ export default async function guildWrapper(
 function getHexColor(tagColor: string) {
   let hexColor;
   if (tagColor == "DARK_AQUA") {
-    hexColor = "#00AAAA";
+    hexColor = "00AAAA";
   } else if (tagColor == "DARK_GREEN") {
-    hexColor = "#00AA00";
+    hexColor = "00AA00";
   } else if (tagColor == "YELLOW") {
-    hexColor = "#FFFF55";
+    hexColor = "FFFF55";
   } else if (tagColor == "GOLD") {
-    hexColor = "#FFAA00";
+    hexColor = "FFAA00";
   } else {
-    hexColor = "#BAB6B6";
+    hexColor = "BAB6B6";
   }
 
   return hexColor;

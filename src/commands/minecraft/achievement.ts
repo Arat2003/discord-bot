@@ -10,11 +10,13 @@ class Achievement extends Command {
 
   async execute(message: Message, args: string[]): Promise<Message | void> {
     if (!args.length) {
-      return message.channel.send(
-        this.client.errorEmbed(
-          "You need to include the achievement's description."
-        )
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(
+            "You need to include the achievement's description."
+          )
+        ]
+      });
     }
 
     let input = args.join(" ");
@@ -22,12 +24,14 @@ class Achievement extends Command {
       Math.random() * Math.floor(39)
     )}/Achievement%20Unblocked/${encodeURI(input)}`;
 
-    return message.channel.send(
-      this.client
-        .templateEmbed()
-        .attachFiles([{ name: "achievement.png", attachment: achievementUrl }])
-        .setImage("attachment://achievement.png")
-    );
+    return message.channel.send({
+      embeds: [
+        this.client
+          .templateEmbed()
+          .setImage("attachment://achievement.png")
+      ],
+      files: [{name: "achievement.png", attachment: achievementUrl}]
+    });
   }
 }
 

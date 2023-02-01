@@ -19,7 +19,7 @@ class Hypixel extends Command {
   usage = "[username]";
 
   async execute(message: Message, args: string[], _prefix: string) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
 
@@ -28,9 +28,11 @@ class Hypixel extends Command {
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
@@ -38,9 +40,11 @@ class Hypixel extends Command {
 
     if (!playerUUID) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
@@ -50,9 +54,9 @@ class Hypixel extends Command {
 
     if (!player) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)]
+        })
       );
     }
 
@@ -118,19 +122,21 @@ class Hypixel extends Command {
     let skinUrl = await skinImage(playerUUID as string, "face");
 
     return (
-      message.channel.send(
-        this.client
-          .templateEmbed()
-          .setTitle(
-            `<:${statusEmoji?.name}:${statusEmoji?.id}> ${
-              stats.rank !== "Non" ? `[${stats.rank}]` : ""
-            } ${stats.name} ${guild?.tag ? `[${guild.tag}]` : ""}`
-          )
-          .addFields(fields)
-          .setColor(stats.plusColor)
-          .attachFiles([{ name: "skin.png", attachment: skinUrl }])
-          .setThumbnail("attachment://skin.png")
-      ) && message.channel.stopTyping()
+      message.channel.send({
+        embeds: [
+          this.client
+            .templateEmbed()
+            .setTitle(
+              `<:${statusEmoji?.name}:${statusEmoji?.id}> ${
+                stats.rank !== "Non" ? `[${stats.rank}]` : ""
+              } ${stats.name} ${guild?.tag ? `[${guild.tag}]` : ""}`
+            )
+            .addFields(fields)
+            .setColor(`#${stats.plusColor}`)
+            .setThumbnail("attachment://skin.png")
+        ],
+        files: [{name: "skin.png", attachment: skinUrl}]
+      })
     );
   }
 }

@@ -19,9 +19,9 @@ class History extends Command {
 
   async execute(message: Message, args: string[]) {
     if (!args.length) {
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
     } else {
       const user = await getUserOrUUID(args[0]);
       if (user) {
@@ -48,15 +48,17 @@ class History extends Command {
         const embed = this.client
           .templateEmbed()
           .setTitle(`${user.name}'s name history:`)
-          .setDescription(desc)
-          .attachFiles([{ name: "skin.png", attachment: skinUrl }])
+          .setDescription(desc.join("\n"))
           .setThumbnail("attachment://skin.png");
 
-        return message.channel.send(embed);
+        return message.channel.send({
+          embeds: [embed],
+          files: [{name: "skin.png", attachment: skinUrl}]
+        });
       } else {
-        return message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-        );
+        return message.channel.send({
+          embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+        });
       }
     }
   }

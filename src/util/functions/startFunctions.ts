@@ -4,12 +4,7 @@ import chalk from "chalk";
 
 export function dbLogin() {
   mongoose.connect(
-    process.env.DB_URI as string,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-    },
+    process.env.DB_URI as string, {},
     (err) => {
       if (err) {
         return console.log(chalk.red.bold("[DB LOGIN]") + chalk.red(`${err}`));

@@ -13,9 +13,9 @@ class Skin extends Command {
 
   async execute(message: Message, args: string[]) {
     if (!args.length)
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
 
     let user = await getUserOrUUID(args[0]);
 
@@ -25,18 +25,20 @@ class Skin extends Command {
       const embed = this.client
         .templateEmbed()
         .setTitle(`${user.name}'s skin:`)
-        .attachFiles([
-          { name: "full.png", attachment: fullUrl },
-          { name: "skin.png", attachment: skinUrl },
-        ])
         .setThumbnail("attachment://skin.png")
         .setImage("attachment://full.png");
 
-      return message.channel.send(embed);
+      return message.channel.send({
+        embeds: [embed],
+        files: [
+          {name: "full.png", attachment: fullUrl},
+          {name: "skin.png", attachment: skinUrl}
+        ]
+      });
     } else {
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
     }
   }
 }

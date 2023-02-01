@@ -15,11 +15,11 @@ export async function getUserOrUUID(user: string) {
   let res: Res;
   if (FULL_UUID_REGEX.test(user)) user.replace(/-/gm, "");
   if (uuidToUserCache.has(user)) {
-    res = { uuid: user, name: uuidToUserCache.get(user) as string };
+    res = { uuid: userToUuidCache.get(uuidToUserCache.get(user)!)! as string, name: uuidToUserCache.get(user) as string};
     return res;
   }
   if (userToUuidCache.has(user)) {
-    res = { uuid: userToUuidCache.get(user) as string, name: user };
+    res = { uuid: userToUuidCache.get(user) as string, name: uuidToUserCache.get(userToUuidCache.get(user)!)! as string};
     return res;
   }
 

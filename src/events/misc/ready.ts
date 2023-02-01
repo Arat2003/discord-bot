@@ -1,9 +1,10 @@
 import chalk from "chalk";
+import { ClientEvents } from "discord.js";
 import moment from "moment";
 import Event from "../../structures/client/Event";
 
 class Ready extends Event {
-  name = "ready";
+  name: keyof ClientEvents = "ready";
 
   async run(): Promise<void> {
     console.log(

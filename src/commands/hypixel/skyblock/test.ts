@@ -16,7 +16,7 @@ class Skyblock extends Command {
   usage = "[username]";
 
   async execute(message: Message, args: string[]) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
 
@@ -25,9 +25,11 @@ class Skyblock extends Command {
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
@@ -35,24 +37,26 @@ class Skyblock extends Command {
 
     if (!playerUUID) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
     const player = await playerWrapper(playerUUID as string);
 
     if (!player) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)]
+      });
     }
 
     // const skinUrl = skinImage(playerUUID, "face");
     const skyblock = await skyblockWrapper(playerUUID);
     console.log(skyblock[10]);
+    return;
   }
 }
 

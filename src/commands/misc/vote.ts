@@ -16,7 +16,7 @@ class Vote extends Command {
         `You can vote for us with these two links: **\n[top.gg](https://top.gg/bot/720525129850814494/vote)\n[BFD](https://botsfordiscord.com/bot/720525129850814494/vote)**`
       );
 
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
 }
 

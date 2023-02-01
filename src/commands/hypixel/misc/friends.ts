@@ -20,31 +20,36 @@ class Friends extends Command {
   usage = "[username]";
   cooldown = 20;
 
-  async execute(message: Message, args: string[]) {
-    message.channel.startTyping();
+  async execute(message: Message, args: string[]) {    
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
-
-    let waitMessage = await message.channel.send(this.client.waitEmbed());
+    let waitMessage = await message.channel.send({
+      embeds: [this.client.waitEmbed()]
+    });
 
     if (args.length >= 1) {
       let a = await getUserOrUUID(args[0]);
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
-      waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+      return (
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
     }
 
     if (!playerUUID) {
-      waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+      return (
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
@@ -52,10 +57,9 @@ class Friends extends Command {
 
     if (!player) {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)]
+      });
     }
 
     const friends = await friendsWrapper(playerUUID as string);
@@ -64,10 +68,9 @@ class Friends extends Command {
 
     if (!friends) {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.NO_FRIENDS_HYPIXEL)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.NO_FRIENDS_HYPIXEL)]
+      });
     }
 
     let friendsFields: EmbedField[] = [];
@@ -90,18 +93,17 @@ class Friends extends Command {
       const embed = this.client
         .templateEmbed()
         .addFields(page)
-        .setColor(parsed.plusColor)
+        .setColor(`#${parsed.plusColor}`)
         .setTitle(
           `${parsed.rank !== "Non" ? `[${parsed.rank}]` : ""} ${parsed.name}`
         )
-        .setAuthor(`Total friends: ${addCommas(`${friends.length}`)}`, iconUrl);
+        .setAuthor({name: `Total friends: ${addCommas(`${friends.length}`)}`, iconURL: iconUrl});
 
       return embed;
     });
     const pagination = new Pagination(message.channel as TextChannel, embeds);
     waitMessage.delete();
     pagination.paginate(60000);
-    message.channel.stopTyping();
     return;
   }
 }

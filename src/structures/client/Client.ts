@@ -1,4 +1,4 @@
-import { Client, Collection, GuildEmoji, MessageEmbed } from "discord.js";
+import { Client, Collection, GuildEmoji, MessageEmbed, Intents } from "discord.js";
 import Command from "./Command";
 import Event from "./Event";
 import Loader from "./Loader";
@@ -26,21 +26,21 @@ export default class MinestatsClient extends Client {
   };
 
   templateEmbed: () => MessageEmbed = () => {
-    return new MessageEmbed().setFooter(footer).setColor(color);
+    return new MessageEmbed().setFooter({text: footer}).setColor(`#${color}`);
   };
 
   errorEmbed: (desc: string) => MessageEmbed = (desc) => {
     return new MessageEmbed()
-      .setFooter(footer)
-      .setColor(color)
+      .setFooter({text: footer})
+      .setColor(`#${color}`)
       .setThumbnail(assets.error)
       .setDescription(desc);
   };
 
   commandErrorEmbed: () => MessageEmbed = () => {
     return new MessageEmbed()
-      .setFooter(footer)
-      .setColor(color)
+      .setFooter({text: footer})
+      .setColor(`#${color}`)
       .setThumbnail(assets.error)
       .setDescription(
         "There was an error executing the command. Please try again later.\nThe issue was broadcasted to the developers and if it persists, join the [support server](https://discord.gg/HjXB4HW)."
@@ -49,8 +49,8 @@ export default class MinestatsClient extends Client {
 
   usageEmbed: (usage: string) => MessageEmbed = (usage) => {
     return new MessageEmbed()
-      .setFooter(footer)
-      .setColor(color)
+      .setFooter({text: footer})
+      .setColor(`#${color}`)
       .setThumbnail(assets.error)
       .setTitle("Wrong usage!")
       .setDescription(
@@ -60,8 +60,8 @@ export default class MinestatsClient extends Client {
 
   waitEmbed: () => MessageEmbed = () => {
     return new MessageEmbed()
-      .setFooter(footer)
-      .setColor(color)
+      .setFooter({text: footer})
+      .setColor(`#${color}`)
       .setTitle("Loading results...")
       .setDescription("This may take a while.");
   };
@@ -73,8 +73,8 @@ export default class MinestatsClient extends Client {
 
   constructor(token: string) {
     super({
-      disableMentions: "everyone",
-      ws: { intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"] },
+      intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING],
+      allowedMentions: {parse: ["roles", "users"], repliedUser: true}
     });
 
     this.token = token;

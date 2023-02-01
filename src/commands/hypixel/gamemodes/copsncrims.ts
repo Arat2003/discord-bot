@@ -18,7 +18,7 @@ class CopsNCrims extends Command {
   stats = true;
 
   async execute(message: Message, args: string[]) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID;
 
@@ -27,9 +27,11 @@ class CopsNCrims extends Command {
       playerUUID = a?.uuid;
     } else if (!user && !args.length) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.USER_NOT_SPECIFIED)
+          ]
+        })
       );
     } else {
       playerUUID = user?.minecraftUUID;
@@ -37,19 +39,22 @@ class CopsNCrims extends Command {
 
     if (!playerUUID) {
       return (
-        message.channel.send(
-          this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-        ) && message.channel.stopTyping()
+        message.channel.send({
+          embeds: [
+            this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
+          ]
+        })
       );
     }
 
     const player = await playerWrapper(playerUUID as string);
 
     if (!player) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(ErrorResponses.USER_NOT_LOGGED_INTO_HYPIXEL)
+        ]
+      });
     }
 
     const skinUrl = skinImage(playerUUID, "face");
@@ -90,13 +95,14 @@ class CopsNCrims extends Command {
     const embed = gamemodeEmbedMaker(
       this.client,
       player.parsed,
-      skinUrl,
       embedFields,
-      "Cops & Crims - Overall"
+      "Cops & Crims - **Overall**"
     );
 
-    message.channel.stopTyping();
-    return message.channel.send(embed);
+    return message.channel.send({
+      embeds: [embed],
+      files: [{name: "skin.png", attachment: skinUrl}]
+    });
   }
 }
 

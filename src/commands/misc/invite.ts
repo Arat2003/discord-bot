@@ -15,7 +15,7 @@ class Invite extends Command {
         `You can use this [link](${this.client.inviteLink}) to invite the bot to any of your servers.`
       );
 
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
 }
 

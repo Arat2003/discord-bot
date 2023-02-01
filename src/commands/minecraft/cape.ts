@@ -16,12 +16,11 @@ class Cape extends Command {
   usage = "<username>";
 
   async execute(message: Message, args: string[], prefix: string) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     if (!args.length) {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.usageEmbed(`${prefix}${this.name} ${this.usage}`)
-      );
+      return message.channel.send({
+        embeds: [this.client.usageEmbed(`${prefix}${this.name} ${this.usage}`)]
+      });
     }
 
     let user = await getUserOrUUID(args[0]);
@@ -86,31 +85,29 @@ class Cape extends Command {
         );
 
         const skinUrl = skinImage(user.uuid, "face");
-        message.channel.stopTyping();
-        return message.channel.send(
-          this.client
-            .templateEmbed()
-            .setTitle(`${user.name}'s ${capeText} Cape`)
-            .attachFiles([
-              attachment,
-              { name: "skin.png", attachment: skinUrl },
-            ])
-            .setImage("attachment://image.png")
-            .setThumbnail("attachment://skin.png")
-        );
+        return message.channel.send({
+          embeds: [
+            this.client
+              .templateEmbed()
+              .setTitle(`${user.name}'s ${capeText} Cape`)
+              .setImage("attachment://image.png")
+              .setThumbnail("attachment://skin.png")
+          ],
+          files: [attachment, {name: "skin.png", attachment: skinUrl}]
+        });
       } else {
-        message.channel.stopTyping();
-        return message.channel.send(
-          this.client
-            .templateEmbed()
-            .setDescription(`${user.name} doesn't have any capes :cry:`)
-        );
+        return message.channel.send({
+          embeds: [
+            this.client
+              .templateEmbed()
+              .setDescription(`${user.name} doesn't have any capes :cry:`)
+          ]
+        });
       }
     } else {
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
     }
   }
 }

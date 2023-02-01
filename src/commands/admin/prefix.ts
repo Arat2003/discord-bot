@@ -20,11 +20,13 @@ class Prefix extends Command {
           `The current prefix is \`${prefix}\`. If you want to change the prefix make sure you add one.`
         );
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     } else if (args.length > 1) {
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.MORE_THAN_ENOUGH_ARGS)
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.errorEmbed(ErrorResponses.MORE_THAN_ENOUGH_ARGS)
+        ]
+      });
     } else {
       const g = await GuildModel.findOne({ guildID: message.guild?.id });
 
@@ -37,7 +39,7 @@ class Prefix extends Command {
         .setDescription(`Prefix successfully updated to \`${args[0]}\`.`)
         .setTimestamp();
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     }
   }
 }

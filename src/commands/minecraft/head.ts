@@ -13,9 +13,9 @@ class Head extends Command {
 
   async execute(message: Message, args: string[]) {
     if (!args.length) {
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
     }
 
     let user = await getUserOrUUID(args[0]);
@@ -24,7 +24,6 @@ class Head extends Command {
       const skinUrl = skinImage(user.uuid, "head");
       embed
         .setTitle(`${user.name}'s head!`)
-        .attachFiles([{ name: "skin.png", attachment: skinUrl }])
         .setThumbnail("attachment://skin.png")
         .addField(
           "1.13+",
@@ -35,11 +34,14 @@ class Head extends Command {
           `\`/give @p minecraft:skull 1 3 {SkullOwner:"${user.name}"}\``
         );
 
-      return message.channel.send(embed);
+      return message.channel.send({
+        embeds: [embed],
+        files: [{name: "skin.png", attachment: skinUrl}]
+      });
     } else {
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
     }
   }
 }

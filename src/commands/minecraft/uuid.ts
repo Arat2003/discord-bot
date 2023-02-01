@@ -17,17 +17,17 @@ class UUID extends Command {
 
   async execute(message: Message, args: string[]): Promise<Message> {
     if (!args.length) {
-      return message.channel.send(
-        this.client.errorEmbed(`${ErrorResponses.WRONG_OR_MISSING_USER}`)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(`${ErrorResponses.WRONG_OR_MISSING_USER}`)]
+      });
     }
 
     let playerUUID = await getUserOrUUID(args[0]);
 
     if (!playerUUID) {
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
     }
 
     let username = uuidToUserCache.get(playerUUID?.uuid as string);
@@ -44,10 +44,12 @@ class UUID extends Command {
         },
         { name: "Trimmed UUID", value: `\`${playerUUID.uuid}\`` },
       ])
-      .attachFiles([{ name: "skin.png", attachment: skinUrl }])
       .setThumbnail("attachment://skin.png");
 
-    return message.channel.send(embed);
+    return message.channel.send({
+      embeds: [embed],
+      files: [{name: "skin.png", attachment: skinUrl}]
+    });
   }
 }
 

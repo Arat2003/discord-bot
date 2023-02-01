@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import { Message } from "discord.js";
 import Command from "../../structures/client/Command";
 import UserModel from "../../util/database/User";
@@ -16,15 +15,7 @@ class Botstats extends Command {
   async execute(message: Message) {
     const date = Date.now();
 
-    let linkedUsers;
-    await UserModel.countDocuments({}, (e, count) => {
-      if (e) {
-        console.log(
-          chalk.red.bold("[LINKED USER DOC COUNT BOTSTATS] ") + chalk.red(e)
-        );
-      }
-      linkedUsers = count;
-    });
+    let linkedUsers = await UserModel.countDocuments();
 
     let uptimeSeconds = this.client.uptime! / 1000;
     let uptimeDays = Math.floor(uptimeSeconds / 86400);
@@ -74,7 +65,7 @@ class Botstats extends Command {
 
     let fields = [
       { name: "Ping", value: `\`${this.client.ws.ping}ms\``, inline: true },
-      { name: "Avg. respose time", value: `\`${ping}ms\``, inline: true },
+      { name: "Avg. response time", value: `\`${ping}ms\``, inline: true },
       { name: "Uptime", value: `\`${uptime}\``, inline: true },
       {
         name: "Guild Count",
@@ -99,7 +90,7 @@ class Botstats extends Command {
         ).toFixed(2)} MB\``,
         inline: true,
       },
-      { name: "Library", value: "`discord.js 12.5.1`", inline: true },
+      { name: "Library", value: "`discord.js 13.5.0`", inline: true },
     ];
 
     const embed = this.client
@@ -108,9 +99,9 @@ class Botstats extends Command {
       .setDescription(
         "A Hypixel Bot created for those who want to know their in-game stats!\nWe are not affiliated with Hypixel nor Mojang."
       )
-      .setAuthor("Minestats", this.client.user!.displayAvatarURL());
+      .setAuthor({name: "Minestats", iconURL: this.client.user!.displayAvatarURL()});
 
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
 }
 

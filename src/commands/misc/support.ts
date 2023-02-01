@@ -16,7 +16,7 @@ class Support extends Command {
         `You can use this [link](${this.client.supportServer}) to join the support server.`
       );
 
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
 }
 

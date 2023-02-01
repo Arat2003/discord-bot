@@ -19,7 +19,7 @@ class Suggestion extends Command {
           "The suggestion has to be longer. Try being more specific please!"
         );
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     } else {
       let suggestionChannel = this.client.channels.cache.get(
         "732795770557694032"
@@ -41,8 +41,8 @@ class Suggestion extends Command {
           "Thanks for your report! It will be read as soon as possible ♥"
         );
 
-      (suggestionChannel as TextChannel).send(embed);
-      return message.channel.send(embed2);
+      (suggestionChannel as TextChannel).send({embeds: [embed]});
+      return message.channel.send({embeds: [embed2]});
     }
   }
 }

@@ -6,7 +6,11 @@ Nick Command:
   - BW
 
 Fix achievement.
+Fix daily, guild, 
+  friends & mutualFriends (File could not be found at discord.js/src/util/DataResolver.js:121:46)
 Party Checker.
+Check if murder mystery's thrown knife kills stat is overall
+Check if smash heroes' rage quits stat is overall
 
 Add exampleUsage attribute to Command.
 Uncomment exampleUsage if statement in help command.

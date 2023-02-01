@@ -87,39 +87,37 @@ function parseQuests(quests: any) {
 }
 
 function getPlusColor(plus: string | undefined, rank: string) {
-  var plusCol = `#BAB6B6`;
-  if (plus === undefined) {
-    plusCol = `#BAB6B6`;
-  } else if (plus === "GOLD" || rank === "VIP+") {
-    plusCol = `#FFAA00`;
+  let plusCol = "BAB6B6";
+  if (plus === "GOLD" || rank === "VIP+") {
+    plusCol = "FFAA00";
   } else if (plus === "RED") {
-    plusCol = `#FF5555`;
+    plusCol = "FF5555";
   } else if (plus === "GREEN") {
-    plusCol = `#55FF55`;
+    plusCol = "55FF55";
   } else if (plus === "YELLOW") {
-    plusCol = `#FFFF55`;
+    plusCol = "FFFF55";
   } else if (plus === "LIGHT_PURPLE") {
-    plusCol = `#FF55FF`;
+    plusCol = "FF55FF";
   } else if (plus === "WHITE") {
-    plusCol = `#f2f2f2`;
+    plusCol = "f2f2f2";
   } else if (plus === "BLUE") {
-    plusCol = `#5555FF`;
+    plusCol = "5555FF";
   } else if (plus === "DARK_GREEN") {
-    plusCol = `#00AA00`;
+    plusCol = "00AA00";
   } else if (plus === "DARK_RED") {
-    plusCol = `#AA0000`;
+    plusCol = "AA0000";
   } else if (plus === "DARK_AQUA") {
-    plusCol = `#00AAAA`;
+    plusCol = "00AAAA";
   } else if (plus === "DARK_PURPLE") {
-    plusCol = `#AA00AA`;
+    plusCol = "AA00AA";
   } else if (plus === "DARK_GRAY") {
-    plusCol = `#555555`;
+    plusCol = "555555";
   } else if (plus === "BLACK") {
-    plusCol = `#000`;
+    plusCol = "000";
   } else if (rank === "PIG+++") {
-    plusCol = `#55FFFF`;
+    plusCol = "55FFFF";
   } else {
-    plusCol = `#BAB6B6`;
+    plusCol = "BAB6B6";
   }
   return plusCol;
 }

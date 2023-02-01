@@ -49,7 +49,7 @@ class Colorcodes extends Command {
         "Text in Minecraft can be formatted in certain servers that allow it by using different codes and the sign `§`."
       );
 
-    return message.channel.send(embed);
+    return message.channel.send({embeds: [embed]});
   }
 }
 

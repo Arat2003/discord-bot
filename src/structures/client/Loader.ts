@@ -20,7 +20,7 @@ class Loader {
       if (stat.isDirectory()) {
         this.loadCommands(path.join(dir, file));
       } else {
-        const commandFile = require(path.join(__dirname, dir, file));
+        const commandFile = await import(path.join(__dirname, dir, file));
 
         const command: Command = new commandFile.default(this.client);
 

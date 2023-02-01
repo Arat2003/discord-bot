@@ -17,7 +17,7 @@ class Help extends Command {
     const embed = this.client.templateEmbed();
 
     if (!args.length) {
-      for (const command of commands.array()) {
+      for (const command of [...commands.values()]) {
         if (command.disabled) continue;
         if (command.stats) continue;
         if (command.devOnly) continue;
@@ -51,7 +51,7 @@ class Help extends Command {
       const embeds = data.map((category: any) => {
         const embed = this.client
           .templateEmbed()
-          .setAuthor("Minestats Help Manual", this.client.user!.avatarURL()!)
+          .setAuthor({name: "Minestats Help Manual", iconURL: this.client.user?.displayAvatarURL()})
           .addFields(category);
         return embed;
       });
@@ -70,9 +70,9 @@ class Help extends Command {
       commands.find((c) => c.aliases && c.aliases.includes(cmd));
 
     if (!command || command.disabled) {
-      return message.channel.send(
-        this.client.errorEmbed("That's not a valid command!")
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed("That's not a valid command!")]
+      });
     }
 
     data.push(
@@ -120,7 +120,7 @@ class Help extends Command {
       )
       .addFields(data);
 
-    return message.channel.send(embed);
+    return message.channel.send({embeds: [embed]});
   }
 }
 

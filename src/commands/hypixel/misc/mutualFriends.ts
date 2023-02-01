@@ -20,12 +20,12 @@ class MutualFriends extends Command {
   cooldown = 20;
 
   async execute(message: Message, args: string[], prefix: string) {
-    message.channel.startTyping();
+    message.channel.sendTyping();
     const user = await UserModel.findOne({ userID: message.author.id });
     let playerUUID1;
     let playerUUID2;
 
-    let waitMessage = await message.channel.send(this.client.waitEmbed());
+    let waitMessage = await message.channel.send({embeds: [this.client.waitEmbed()]});
 
     if (args.length === 2) {
       let a = await getUserOrUUID(args[0]);
@@ -38,26 +38,25 @@ class MutualFriends extends Command {
       playerUUID2 = a?.uuid;
     } else if (!user && !args.length) {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.NOT_ENOUGH_USERS)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.NOT_ENOUGH_USERS)]
+      });
     } else {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.usageEmbed(
-          `The correct usage for the command is **${prefix}mfl ${this.usage}**.`
-        )
-      );
+      return message.channel.send({
+        embeds: [
+          this.client.usageEmbed(
+            `The correct usage for the command is **${prefix}mfl ${this.usage}**.`
+          )
+        ]
+      });
     }
 
     if (!playerUUID1 || !playerUUID2) {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed(ErrorResponses.WRONG_OR_MISSING_USER)]
+      });
     }
 
     let p1: ParsedPlayer = (await playerWrapper(playerUUID1 as string)).parsed;
@@ -68,10 +67,9 @@ class MutualFriends extends Command {
 
     if (!p1Friends || !p2Friends) {
       waitMessage.delete();
-      message.channel.stopTyping();
-      return message.channel.send(
-        this.client.errorEmbed("These players don't have any mutual friends.")
-      );
+      return message.channel.send({
+        embeds: [this.client.errorEmbed("These players don't have any mutual friends.")]
+      });
     }
 
     let mfl: mutuals[] = [];
@@ -117,7 +115,7 @@ class MutualFriends extends Command {
             p2.rank !== "Non" ? `**[${p2.rank}]**` : ""
           } **${Util.escapeMarkdown(p2.name)}'s** mutual friends!`
         )
-        .setAuthor(`Total mutual friends: ${addCommas(`${mfl.length}`)}`);
+        .setAuthor({name: `Total mutual friends: ${addCommas(`${mfl.length}`)}`});
 
       return embed;
     });
@@ -125,7 +123,6 @@ class MutualFriends extends Command {
     const pagination = new Pagination(message.channel as TextChannel, embeds);
     waitMessage.delete();
     pagination.paginate(60000);
-    message.channel.stopTyping();
     return;
   }
 }

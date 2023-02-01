@@ -31,13 +31,13 @@ export default class Eval extends Command {
           `\`\`\`js\n${beautify(toEval, { format: "js" })}\n\`\`\``
         )
         .addField("Type of result:", typeof evaluated)
-        .addField("Result:", evaluated);
+        .addField("Result:", evaluated.toString());
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     } catch (err) {
-      let embed: MessageEmbed = this.client.errorEmbed(err);
+      let embed: MessageEmbed = this.client.errorEmbed(`${err}`);
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     }
   }
 }
